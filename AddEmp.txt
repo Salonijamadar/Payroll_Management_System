@@ -1,0 +1,82 @@
+package com.fss.pms;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+
+public class AddEmployee {
+public static void main(String[] args) {
+	
+	Connection con=null;
+	PreparedStatement ps=null;
+	String qry="insert into pms.employee values(?,?,?,?,?,?,?,?) ";
+	Scanner sc= new Scanner(System.in);
+	System.out.println("enter the employee id (only numbers)");
+	int id=sc.nextInt();
+	System.out.println("enter the employee first name");
+	String fname=sc.next();
+	System.out.println("enter the employee last name ");
+	String lname=sc.next();
+	System.out.println("enter the employee designation");
+	String designation=sc.next();
+	System.out.println("enter the employee gender ");
+	String gender=sc.next();
+	System.out.println("enter the employee age (only number)");
+	int age=sc.nextInt();
+	System.out.println("enter the employee contact number");
+	String contact_number=sc.next();
+	System.out.println("enter the employee email id ");
+	String email=sc.next();
+	sc.close();
+	
+	try {
+		Class.forName("com.mysql.jdbc.Driver");
+		con=(Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306?user=root&password=admin");
+		con.setAutoCommit(false);
+		ps=(PreparedStatement) con.prepareStatement(qry);
+		ps.setInt(1, id);
+		ps.setString(2, fname);
+		ps.setString(3, lname);
+		ps.setString(4, designation);
+		ps.setString(5, gender);
+		ps.setInt(6, age);
+		ps.setString(7, contact_number);
+		ps.setString(8, email);
+		ps.executeUpdate();
+		System.out.println("employee details are added successfully ");
+		con.commit();
+		
+	} catch (ClassNotFoundException | SQLException e) {
+		try {
+			con.rollback();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		e.printStackTrace();
+	}
+	finally {
+		if(ps!=null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(con!=null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	//	System.out.println("all costly resources are closed");
+	}
+}
+}
