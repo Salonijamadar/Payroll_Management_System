@@ -1,0 +1,155 @@
+// add employee details jdbc code
+
+package com.fss.pmsApp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+
+public class AddEmployee {
+public static void main(String[] args) {
+	
+	Connection con=null;
+	PreparedStatement ps=null;
+	String qry="insert into pms.employee values(?,?,?,?,?,?,?) ";
+	Scanner sc= new Scanner(System.in);
+	System.out.println("enter the employee id");
+	int id=sc.nextInt();
+	System.out.println("enter the employee first name");
+	String fname=sc.next();
+	System.out.println("enter the employee last name ");
+	String lname=sc.next();	
+	System.out.println("enter the employee gender ");
+	String gender=sc.next();
+	System.out.println("enter the employee age ");
+	int age=sc.nextInt();
+	System.out.println("enter the employee contact number");
+	String contact_number=sc.next();
+	System.out.println("enter the employee email id ");
+	String email=sc.next();
+	sc.close();
+	String url="jdbc:mysql://localhost:3306";
+	String uname="root";
+	String password="Saloni@14";
+	try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		con=(Connection) DriverManager.getConnection(url, uname, password);
+		con.setAutoCommit(false);
+		ps=(PreparedStatement) con.prepareStatement(qry);
+		ps.setInt(1, id);
+		ps.setString(2, fname);
+		ps.setString(3, lname);
+	
+		ps.setString(4, gender);
+		ps.setInt(5, age);
+		ps.setString(6, contact_number);
+		ps.setString(7, email);
+		ps.executeUpdate();
+		System.out.println("employee details are added successfully ");
+		con.commit();
+		
+	} catch (ClassNotFoundException | SQLException e) {
+		
+		e.printStackTrace();
+	}
+	finally {
+		if(ps!=null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(con!=null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	//	System.out.println("all costly resources are closed");
+	}
+}
+}
+
+
+OUTPUT :
+
+enter the employee id
+1
+enter the employee first name
+Saloni
+enter the employee last name 
+J
+enter the employee gender 
+Female
+enter the employee age 
+22
+enter the employee contact number
+0123456789
+enter the employee email id 
+sj@gmail.com
+employee details are added successfully 
+
+
+// mysql create tables queries
+
+create database PMS;
+use PMS;
+create table employee(
+emp_ID int primary key,
+first_name varchar(45),
+last_name varchar(45),
+gender varchar(10),
+age int(3),
+contact_number long,
+emp_email varchar(45));
+
+create table payroll(
+payroll_ID int primary key,
+emp_ID int ,
+job_ID int,
+salary_ID varchar(45),
+leave_ID varchar(45),
+date date,
+report varchar(200),
+total_amount double,
+foreign key(emp_ID) references employee(emp_ID),
+foreign key(job_ID) references job_Department(job_ID),
+foreign key(salary_ID) references salary_Bonus(salary_ID),
+foreign key(leave_ID) references leaves(leave_ID));
+
+create table job_Department(
+job_ID int primary key,
+job_dept varchar(50),
+job_name varchar(45),
+description varchar(45),
+salary_range double);
+
+create table salary_Bonus(
+salary_ID varchar(50) primary key,
+job_ID int,
+monthly_amount double,
+annual_amount double,
+bonus_amount double,
+foreign key(job_id) references job_Department(job_id));
+
+create table leaves (
+leave_ID varchar(45) primary key,
+emp_ID int,
+leave_date date,
+leave_status varchar(50),
+leave_reason varchar(500),
+foreign key (emp_ID) references employee(emp_ID));
+
+OUTPUT :
+ 
+1	Saloni	J	Female		22	0123456789	sj@gmail.com
+
+
+
