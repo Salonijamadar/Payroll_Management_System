@@ -1,0 +1,56 @@
+//database for Payroll management system
+
+create database PMS;
+use PMS;
+
+create table employee(
+emp_ID int primary key,
+first_name varchar(45),
+last_name varchar(45),
+gender varchar(10),
+age int(3),
+contact_number long,
+emp_email varchar(45));
+
+create table payroll(
+payroll_ID int primary key,
+emp_ID int ,
+job_ID int,
+salary_ID varchar(45),
+leave_ID varchar(45),
+date date,
+report varchar(200),
+total_amount double,
+foreign key(emp_ID) references employee(emp_ID),
+foreign key(job_ID) references job_Department(job_ID),
+foreign key(salary_ID) references salary_Bonus(salary_ID),
+foreign key(leave_ID) references leaves(leave_ID));
+
+create table job_Department(
+job_ID int primary key,
+job_dept varchar(50),
+job_name varchar(45),
+description varchar(45),
+salary_range double);
+
+create table salary_Bonus(
+salary_ID varchar(50) primary key,
+job_ID int,
+monthly_amount double,
+annual_amount double,
+bonus_amount double,
+foreign key(job_id) references job_Department(job_id));
+
+
+create table leaves (
+leave_ID varchar(45) primary key,
+emp_ID int,
+leave_date date,
+leave_status varchar(50),
+leave_reason varchar(500),
+foreign key (emp_ID) references employee(emp_ID));
+show tables;
+select * from employee;
+
+create table empattendence(emp_ID int, foreign key (emp_ID) references employee(emp_ID), working_hrs float, working_days float);
+select * from empattendence;
