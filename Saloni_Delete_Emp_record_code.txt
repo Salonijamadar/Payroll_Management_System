@@ -1,0 +1,83 @@
+package Com.fss.pms;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DeleteempRecord {
+
+	public static void main(String[] args) throws NumberFormatException, IOException, SQLException {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		System.out.println("Enter the employee id");
+		int emp_id = Integer.parseInt(br.readLine());
+		String qry = "delete from pms.employee where emp_ID=" + emp_id + "";
+		String url = "jdbc:mysql://localhost:3306";
+		String uname = "root";
+		String password = "Saloni@14";
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			//searching for driver
+			con = (Connection) DriverManager.getConnection(url, uname, password);
+			st = con.createStatement();
+			rs = ((java.sql.Statement) st).executeQuery("select * from pms.employee");
+			while (rs.next()) {
+				String EmployeeDetails = "";
+				for (int i = 1; i <= 7; i++) {
+					EmployeeDetails += rs.getString(i) + "    ";
+				}
+				System.out.println(EmployeeDetails);
+			}
+			System.out.println("Are you sure deleted the record enter yes/no");
+			String d = br.readLine();
+
+			if (d.contentEquals("yes")) {
+				st.executeUpdate(qry);
+				System.out.println("data deleted succesfully");
+			} else
+				System.out.println("your date will not be deleted");
+
+		} catch (ClassNotFoundException | SQLException e) {
+
+			e.printStackTrace();
+		} finally {
+			if (st != null) {
+				try {
+					st.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+
+	}
+
+}
+
+OUTPUT :
+
+Enter the employee id
+17710
+17707    Saloni    Jamadar    Female    22    8329225387    saloni@gmail.com    
+17708    Nikita    Jamkar    Female    22    7896541230    nikita@gmail.com    
+17709    Shashidhar    Reddy    Male    23    8745963210    shashi@gmail.com    
+17710    sufiyan    sharma    male    25    8965412307    sufi@gmail.com    
+
+Are you sure deleted the record enter yes/no
+
+yes
+
+data deleted succesfully
+
